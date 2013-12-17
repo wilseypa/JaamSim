@@ -73,6 +73,10 @@ a {
         margin: 0 0 5px 0;
     }
 
+   .container_12 .left_column a {
+        color: #fff;
+    }
+    
 .container_12 .right_column {
         width: 560px;
         height: 460px;
