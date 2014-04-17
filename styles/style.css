@@ -1,7 +1,13 @@
-body {
+body#home {
     color: #C8C8C8;
     background: #eaeaea url(../images/bg.jpg) repeat-x;
     background-position: center 96px;
+    font-family: Arial;
+}
+
+body#other {
+    color: #C8C8C8;
+    background: #eaeaea;
     font-family: Arial;
 }
 
