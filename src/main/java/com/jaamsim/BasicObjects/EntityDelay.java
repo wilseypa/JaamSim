@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import com.jaamsim.Samples.SampleExpInput;
-import com.jaamsim.events.ProcessTarget;
 import com.jaamsim.input.ColourInput;
 import com.jaamsim.input.Input;
 import com.jaamsim.input.InputAgent;
@@ -31,6 +30,7 @@ import com.jaamsim.render.HasScreenPoints;
 import com.jaamsim.units.DimensionlessUnit;
 import com.jaamsim.units.DistanceUnit;
 import com.jaamsim.units.TimeUnit;
+import com.sandwell.JavaSimulation.EntityTarget;
 import com.sandwell.JavaSimulation3D.DisplayEntity;
 
 /**
@@ -138,46 +138,27 @@ public class EntityDelay extends LinkedComponent implements HasScreenPoints {
 		entry.startTime = simTime;
 		entry.duration = dur;
 		entityMap.put(ent.getEntityNumber(), entry);
-		this.setPresentState();
 
-		this.scheduleProcess(dur, 5, new RemoveDisplayEntityTarget(this, "removeDisplayEntity", ent));
+		this.scheduleProcess(dur, 5, new RemoveDisplayEntityTarget(this, ent));
 	}
 
-	private void setPresentState() {
-		if (entityMap.isEmpty()) {
-			this.setPresentState("Idle");
-		}
-		else {
-			this.setPresentState("Working");
-		}
-	}
+	private static class RemoveDisplayEntityTarget extends EntityTarget<EntityDelay> {
+		private final DisplayEntity delayedEnt;
 
-	private static class RemoveDisplayEntityTarget extends ProcessTarget {
-		private final EntityDelay delay;
-		private final String method;
-		private final DisplayEntity ent;
-
-		RemoveDisplayEntityTarget(EntityDelay d, String m, DisplayEntity e) {
-			delay = d;
-			method = m;
-			ent = e;
+		RemoveDisplayEntityTarget(EntityDelay d, DisplayEntity e) {
+			super(d, "removeDisplayEntity");
+			delayedEnt = e;
 		}
 
 		@Override
 		public void process() {
-			delay.removeDisplayEntity(ent);
-		}
-
-		@Override
-		public String getDescription() {
-			return String.format( "%s.%s(%s)", delay.getInputName(), method, ent.getInputName() );
+			ent.removeDisplayEntity(delayedEnt);
 		}
 	}
 
 	public void removeDisplayEntity(DisplayEntity ent) {
 		// Remove the entity from the lists
 		entityMap.remove(ent.getEntityNumber());
-		this.setPresentState();
 
 		// Send the entity to the next component
 		this.sendToNextComponent(ent);

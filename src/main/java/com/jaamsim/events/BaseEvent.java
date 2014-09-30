@@ -14,22 +14,12 @@
  */
 package com.jaamsim.events;
 
-/**
- * A ConditionalHandle provides a means to remember a conditional wait in order
- * to manage it's execution.  Examples of this control would be killing the event
- * or executing it earlier than it otherwise would be.
- */
-public class ConditionalHandle {
-	ConditionalEvent evt;
+class BaseEvent {
+	ProcessTarget target;
+	EventHandle handle;
 
-	public ConditionalHandle() {
-		evt = null;
-	}
-
-	/**
-	 * Returns true if this handle is currently tracking a conditional event.
-	 */
-	public boolean isScheduled() {
-		return evt != null;
+	BaseEvent(ProcessTarget t, EventHandle h) {
+		target = t;
+		handle = h;
 	}
 }

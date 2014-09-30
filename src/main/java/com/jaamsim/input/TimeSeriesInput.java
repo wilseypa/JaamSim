@@ -14,6 +14,9 @@
  */
 package com.jaamsim.input;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import com.jaamsim.datatypes.DoubleVector;
 import com.jaamsim.units.DimensionlessUnit;
 import com.jaamsim.units.Unit;
@@ -55,4 +58,26 @@ public class TimeSeriesInput extends Input<TimeSeriesProvider> {
 			Input.assertUnitsMatch(unitType, s.getUnitType());
 		value = s;
 	}
+
+	@Override
+	public ArrayList<String> getValidOptions() {
+		ArrayList<String> list = new ArrayList<String>();
+		for (Entity each : Entity.getClonesOfIterator(Entity.class, TimeSeriesProvider.class)) {
+			TimeSeriesProvider tsp = (TimeSeriesProvider)each;
+			if (tsp.getUnitType() == unitType)
+				list.add(each.getInputName());
+		}
+		Collections.sort(list);
+		return list;
+	}
+
+	@Override
+	public String getValueString() {
+		if (value == null || defValue == value)
+			return "";
+		if (value instanceof TimeSeriesConstantDouble)
+			return super.getValueString();
+		return value.toString();
+	}
+
 }

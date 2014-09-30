@@ -23,7 +23,7 @@ import com.jaamsim.basicsim.ClonesOfIterableInterface;
 import com.jaamsim.basicsim.ErrorException;
 import com.jaamsim.basicsim.InstanceIterable;
 import com.jaamsim.basicsim.ReflectionTarget;
-import com.jaamsim.events.ConditionalHandle;
+import com.jaamsim.events.Conditional;
 import com.jaamsim.events.EventHandle;
 import com.jaamsim.events.EventManager;
 import com.jaamsim.events.ProcessTarget;
@@ -510,6 +510,12 @@ public class Entity {
 		EventManager.scheduleTicks(ticks, priority, false, t, null);
 	}
 
+	public final void waitUntil(Conditional cond, EventHandle handle) {
+		// Don't actually wait if the condition is already true
+		if (cond.evaluate()) return;
+		EventManager.waitUntil(cond, handle);
+	}
+
 	/**
 	 * Wait a number of simulated seconds.
 	 * @param secs
@@ -628,22 +634,6 @@ public class Entity {
 	 */
 	public final void scheduleLastLIFO() {
 		EventManager.waitTicks(0, Entity.PRIO_LOWEST, false, null);
-	}
-
-	public final void killEvent(EventHandle handle) {
-		EventManager.killEvent(handle);
-	}
-
-	public final void killEvent(ConditionalHandle handle) {
-		EventManager.killEvent(handle);
-	}
-
-	public final void interruptEvent(EventHandle handle) {
-		EventManager.interruptEvent(handle);
-	}
-
-	public final void interruptEvent(ConditionalHandle handle) {
-		EventManager.interruptEvent(handle);
 	}
 
 	// ******************************************************************************************************

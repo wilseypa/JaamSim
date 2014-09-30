@@ -63,10 +63,10 @@ public class SampleInput extends Input<SampleProvider> {
 	@Override
 	public ArrayList<String> getValidOptions() {
 		ArrayList<String> list = new ArrayList<String>();
-		for (Entity each: Entity.getAll()) {
-			if( (SampleProvider.class).isAssignableFrom(each.getClass()) ) {
-			    list.add(each.getInputName());
-			}
+		for (Entity each : Entity.getClonesOfIterator(Entity.class, SampleProvider.class)) {
+			SampleProvider sp = (SampleProvider)each;
+			if (sp.getUnitType() == unitType)
+				list.add(each.getInputName());
 		}
 		Collections.sort(list);
 		return list;
@@ -76,6 +76,8 @@ public class SampleInput extends Input<SampleProvider> {
 	public String getValueString() {
 		if (value == null || defValue == value)
 			return "";
+		if (value instanceof SampleConstant)
+			return super.getValueString();
 		return value.toString();
 	}
 
